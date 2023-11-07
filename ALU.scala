@@ -12,18 +12,18 @@ class ALU extends Module {
     val zero = Output(Bool())
   })
 
-  io.zero := 1.U
   io.result := 0.U
+  io.zero := false.B
   //Implement this module here
   switch (io.sel) {
-    is("b000".U) {io.zero := io.regA < io.opB} // aluOp for jump if less than
-    is("b001".U) {io.result := io.regA + io.opB}
-    is("b010".U) {io.result := io.regA * io.opB}
-    is("b011".U) {io.zero := io.regA === io.opB} // aluOp for jump if equal
-    is("b100".U) {io.result := io.regA - io.opB}
-    is("b101".U) {io.result := io.opB}
-    is("b110".U) {io.result := io.opB} // same as b110
-    is("b111".U) {io.result := io.regA}
+    is("b000".U) {} // No action
+    is("b001".U) {io.result := io.regA + io.opB} // Add
+    is("b010".U) {io.result := io.regA * io.opB} // MULT
+    is("b011".U) {io.zero := io.regA === io.opB} // JEQ
+    is("b100".U) {io.result := io.regA - io.opB} // SUBI
+    is("b101".U) {io.result := io.regA} // LD/SD
+    is("b110".U) {io.zero := io.regA < io.opB} // JLT
+    is("b111".U) {io.result := io.opB} // LI
 
   }
 }

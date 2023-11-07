@@ -28,8 +28,6 @@ class CPUTop extends Module {
   val alu = Module(new ALU())
 
   //Connecting the modules
-  programCounter.io.run := io.run
-  programCounter.io.stop := controlUnit.io.stop
   programMemory.io.address := programCounter.io.programCounter
   io.done := false.B
 
@@ -40,12 +38,13 @@ class CPUTop extends Module {
   val remainingBits = Wire(UInt(20.W))
   remainingBits := programMemory.io.instructionRead(19, 0)
   val extended = Wire(UInt(32.W))
-  extended := Cat(remainingBits, 0.U(12.W))
+  extended := Cat(0.U(12.W), remainingBits)
 
   // ProgramCounter
-  programCounter.io.run := controlUnit.io.run
-  programCounter.io.jump := Mux((controlUnit.io.condJump & alu.io.zero) | controlUnit.io.imJump, extended, programCounter.io.programCounter)
-  programCounter.io.programCounterJump := extended(15,0)
+  programCounter.io.run := io.run
+  programCounter.io.jump := (controlUnit.io.condJump & alu.io.zero) | controlUnit.io.imJump
+  programCounter.io.programCounterJump := remainingBits(15,0)
+  programCounter.io.stop := controlUnit.io.done
 
   // Control unit
   controlUnit.io.opCode := programMemory.io.instructionRead(31,28)
@@ -59,7 +58,7 @@ class CPUTop extends Module {
 
   // ALU
   alu.io.regA := registerFile.io.a
-  alu.io.opB := Mux(controlUnit.io.aluSrc, registerFile.io.b, extended)
+  alu.io.opB := Mux(controlUnit.io.aluSrc, extended, registerFile.io.b)
   alu.io.sel := controlUnit.io.aluOp
 
   // Data Memory
