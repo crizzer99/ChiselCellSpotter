@@ -86,7 +86,7 @@ class ControlUnit extends Module {
     is("b0110".U) { // LD
       io.writeEnable := true.B
       io.aluSrc := false.B
-      io.memWrite := true.B
+      io.memWrite := false.B
       io.memToReg := true.B
       io.aluOp := "b101".U
 
@@ -96,7 +96,7 @@ class ControlUnit extends Module {
     }
     is("b0111".U) { // SD
       io.writeEnable := false.B
-      io.aluSrc := false.B
+      io.aluSrc := true.B
       io.memWrite := true.B
       io.memToReg := false.B
       io.aluOp := "b101".U

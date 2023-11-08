@@ -21,7 +21,7 @@ class ALU extends Module {
     is("b010".U) {io.result := io.regA * io.opB} // MULT
     is("b011".U) {io.zero := io.regA === io.opB} // JEQ
     is("b100".U) {io.result := io.regA - io.opB} // SUBI
-    is("b101".U) {io.result := io.regA} // LD/SD
+    is("b101".U) {io.result := io.regA} // SD/LD
     is("b110".U) {io.zero := io.regA < io.opB} // JLT
     is("b111".U) {io.result := io.opB} // LI
 
